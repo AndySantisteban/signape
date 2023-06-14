@@ -23,15 +23,19 @@ Este proyecto es un detector de lenguaje de señas peruano que utiliza las sigui
 ```bash
   npm install
 ```
+
 4. Construye los archivos estáticos para el cliente:
 
 ```bash
 npm run build
 ```
+
 5. Inicia el servidor de desarrollo:
+
 ```bash
 npm start
 ```
+
 6. Accede al proyecto en tu navegador web:
 
 http://localhost:9000
@@ -51,23 +55,28 @@ http://localhost:9000
 2. Clona el repositorio bifurcado en tu máquina local.
 
 3. Crea una rama para tu función o corrección de errores:
+
 ```bash
 git checkout -b nombre-de-la-rama
 ```
 
 4. Realiza los cambios deseados y realiza los commits correspondientes:
+
 ```bash
 git commit -m "Descripción de los cambios"
 ```
+
 5. Envía tus cambios al repositorio bifurcado:
+
 ```bash
 git push origin nombre-de-la-rama
 ```
+
 6. Abre una solicitud de extracción en el repositorio original.
 
 ## Créditos
 
-Este proyecto fue creado por Andy Josue Santisteban Ostos junto con su pareja Nicolette Pacheco Contreras y se basa en las siguientes tecnologías:
+Este proyecto fue creado por Andy Josue Santisteban Ostos junto a Nicolette Pacheco Contreras y se basa en las siguientes tecnologías:
 
 - React.js
 - Express
