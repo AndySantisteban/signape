@@ -1,0 +1,46 @@
+.main-window {
+	padding-top: 80px;
+	font-size: 12px;
+
+	@media screen and (max-width: 767px) {
+		padding-top: 40px;
+
+		.pull-left, .pull-right {
+			width: 100%;
+			text-align: center;
+		}
+
+		.pull-right {
+			margin-top: 20px;
+		}
+	}
+
+	.btn-action {
+		$height: 30px;
+		height: $height;
+		width: $height;
+		margin: 10px 15px 0px 0px;
+		text-align: center;
+		border-radius: 50%;
+		cursor: pointer;
+		transition-duration: 0.25s;
+		background-color: $blue;
+
+		&:hover {
+			background-color: $green;
+		}
+	}
+
+	.txt-clientId {
+		// height: 40px;
+		// margin: 40px auto 0px 10px;
+		color: $main-color;
+		font-size: 12px;
+		background-color: transparent;
+		border: none;
+		border-bottom: solid 1px $main-color;
+		@include input-placeholder(rgba($main-color, 0.8));
+	}
+
+}
+
