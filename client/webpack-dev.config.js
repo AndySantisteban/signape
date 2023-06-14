@@ -1,6 +1,8 @@
 const { HotModuleReplacementPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const socketConfig = require('../config');
+const path = require('path');
+const express = require('express');
 
 module.exports = {
   mode: 'development',
@@ -50,7 +52,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Signape',
       filename: 'index.html',
-      template: 'src/html/index.html',
+      template: 'src/html/index.html'
     })
   ],
   devServer: {
@@ -58,7 +60,11 @@ module.exports = {
     port: 9000,
     proxy: {
       '/bridge/': `http://localhost:${socketConfig.PORT}`
-    }
+    },
+    static: {
+      directory: path.join(__dirname, 'src', 'models'),
+      publicPath: '/models',
+    },
   },
   watchOptions: {
     aggregateTimeout: 300,

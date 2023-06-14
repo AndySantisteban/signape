@@ -1,15 +1,30 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { faMicrophone, faPhone, faVideo } from '@fortawesome/free-solid-svg-icons';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
-import ActionButton from './ActionButton';
+import {
+  faMicrophone,
+  faPhone,
+  faVideo,
+} from "@fortawesome/free-solid-svg-icons";
+import classnames from "classnames";
+import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import { detectVideo } from "../utils/detect";
+import ActionButton from "./ActionButton";
 
-function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, endCall }) {
+function CallWindow({
+  peerSrc,
+  localSrc,
+  config,
+  mediaDevice,
+  status,
+  endCall,
+  model,
+}) {
   const peerVideo = useRef(null);
   const localVideo = useRef(null);
+  const canvasRef = useRef(null);
   const [video, setVideo] = useState(config.video);
   const [audio, setAudio] = useState(config.audio);
+  const classThreshold = 0.2;
 
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
@@ -18,8 +33,8 @@ function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, endCall })
 
   useEffect(() => {
     if (mediaDevice) {
-      mediaDevice.toggle('Video', video);
-      mediaDevice.toggle('Audio', audio);
+      mediaDevice.toggle("Video", video);
+      mediaDevice.toggle("Audio", audio);
     }
   });
 
@@ -28,31 +43,53 @@ function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, endCall })
    * @param {'Audio' | 'Video'} deviceType - Type of the device eg: Video, Audio
    */
   const toggleMediaDevice = (deviceType) => {
-    if (deviceType === 'Video') {
+    if (deviceType === "Video") {
       setVideo(!video);
     }
-    if (deviceType === 'Audio') {
+    if (deviceType === "Audio") {
       setAudio(!audio);
     }
     mediaDevice.toggle(deviceType);
   };
 
   return (
-    <div className={classnames('call-window', status)}>
-      <video id="peerVideo" ref={peerVideo} autoPlay />
+    <div className={classnames("call-window", status)}>
+      <div className="position-relative">
+        <video
+          id="peerVideo"
+          ref={peerVideo}
+          autoPlay
+          onPlay={() => {
+            detectVideo(
+              peerVideo.current,
+              model,
+              classThreshold,
+              canvasRef.current
+            );
+          }}
+        />
+
+        <canvas
+          width={model.inputShape[1]}
+          height={model.inputShape[2]}
+          style={{zIndex: 10}}
+          ref={canvasRef}
+        />
+      </div>
+
       <video id="localVideo" ref={localVideo} autoPlay muted />
       <div className="video-control">
         <ActionButton
           key="btnVideo"
           icon={faVideo}
           disabled={!video}
-          onClick={() => toggleMediaDevice('Video')}
+          onClick={() => toggleMediaDevice("Video")}
         />
         <ActionButton
           key="btnAudio"
           icon={faMicrophone}
           disabled={!audio}
-          onClick={() => toggleMediaDevice('Audio')}
+          onClick={() => toggleMediaDevice("Audio")}
         />
         <ActionButton
           className="hangup"
@@ -70,10 +107,11 @@ CallWindow.propTypes = {
   peerSrc: PropTypes.object, // eslint-disable-line
   config: PropTypes.shape({
     audio: PropTypes.bool.isRequired,
-    video: PropTypes.bool.isRequired
+    video: PropTypes.bool.isRequired,
   }).isRequired,
   mediaDevice: PropTypes.object, // eslint-disable-line
-  endCall: PropTypes.func.isRequired
+  endCall: PropTypes.func.isRequired,
+  model: PropTypes.object,
 };
 
 export default CallWindow;

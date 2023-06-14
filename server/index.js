@@ -10,7 +10,7 @@ const server = http.createServer(app);
 app.use(cors());
 
 app.use('/', express.static(`${__dirname}/../client/dist`));
-app.use('/public', express.static(`${__dirname}/../public`));
+// app.use('/model', express.static(`${__dirname}/../../client/public/best3_web_model/model.json`));
 
 server.listen(config.PORT, () => {
   socket(server);
