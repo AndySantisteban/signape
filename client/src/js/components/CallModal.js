@@ -1,4 +1,4 @@
-import { faPhone, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
@@ -21,7 +21,6 @@ function CallModal({ status, callFrom, startCall, rejectCall }) {
       <p>
         <span className="caller">{`${callFrom}, te está llamando`}</span>
       </p>
-      <ActionButton icon={faVideo} onClick={acceptWithVideo(true)} />
       <ActionButton icon={faPhone} onClick={acceptWithVideo(false)} />
       <ActionButton className="hangup" icon={faPhone} onClick={rejectCall} />
     </div>

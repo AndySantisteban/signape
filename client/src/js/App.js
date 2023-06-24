@@ -2,6 +2,7 @@ import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl"; // set backend to webgl
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
+import ClipLoader from "react-spinners/GridLoader";
 import Logo from "../assets/Screenshot_2.png";
 import { PeerConnection, socket } from "./communication";
 import CallModal from "./components/CallModal";
@@ -141,16 +142,33 @@ const App = () => {
 
   return (
     <div className="bg-white">
+      {loading.loading && (
+        <div className="bg-light position-fixed vh-100 vw-100">
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <ClipLoader
+              color={"#121212"}
+              loading={loading.loading}
+              cssOverride={{
+                display: "block",
+                margin: "0 auto",
+                borderColor: "#121212",
+              }}
+              size={15}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            {loading.loading
+              ? `Cargando modelo para web... ${loading.progress.toFixed(2)}`
+              : "Modelo cargado"}
+          </div>
+        </div>
+      )}
+
       <nav className="navbar bg-light shadow-sm">
         <div className="container">
           <a className=" " href="#">
             <img src={Logo} alt="icon" width={"100px"} />
           </a>
-          <div>
-            {loading.loading
-              ? `Cargando modelo para web... ${loading.progress.toFixed(2)}`
-              : "Modelo cargado"}
-          </div>
           <div>
             <small>
               <code className="text-muted">
