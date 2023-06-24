@@ -1,3 +1,5 @@
+/* This code exports an array of strings called `Labels` that contains the letters of the alphabet
+(including the letter "Ñ"). This array can be imported and used in other parts of the code. */
 export const Labels = [
   "A",
   "B",
@@ -25,5 +27,5 @@ export const Labels = [
   "W",
   "X",
   "Y",
-  "Z"
-]
+  "Z",
+];

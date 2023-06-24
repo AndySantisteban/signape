@@ -10,6 +10,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { detectVideo } from "../utils/detect";
 import ActionButton from "./ActionButton";
 
+/**
+ * The function renders a video call window with options to toggle video and audio devices and end the
+ * call.
+ * @returns A React component that renders a video call window with options to toggle video and audio
+ * devices, and end the call. It also uses a machine learning model to detect objects in the video
+ * stream and displays the results on a canvas element.
+ */
 function CallWindow({
   peerSrc,
   localSrc,
@@ -22,9 +29,10 @@ function CallWindow({
   const peerVideo = useRef(null);
   const localVideo = useRef(null);
   const canvasRef = useRef(null);
+  const textRef = useRef(null);
   const [video, setVideo] = useState(config.video);
   const [audio, setAudio] = useState(config.audio);
-  const classThreshold = 0.2;
+  const classThreshold = 0.15;
 
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
@@ -39,8 +47,10 @@ function CallWindow({
   });
 
   /**
-   * Turn on/off a media device
-   * @param {'Audio' | 'Video'} deviceType - Type of the device eg: Video, Audio
+   * The function toggles the state of a media device (either video or audio) and calls the
+   * corresponding method from the mediaDevice object.
+   * @param deviceType - A string that specifies the type of media device to toggle. It can be either
+   * "Video" or "Audio".
    */
   const toggleMediaDevice = (deviceType) => {
     if (deviceType === "Video") {
@@ -64,7 +74,17 @@ function CallWindow({
               peerVideo.current,
               model,
               classThreshold,
-              canvasRef.current
+              canvasRef.current,
+              (res) => {
+                if (!res) return;
+                try {
+                  if (textRef.current === undefined || textRef.current === null)
+                    return;
+                  textRef.current.innerHTML += res;
+                } catch (e) {
+                  console.log("error - subtitle", e);
+                }
+              }
             );
           }}
         />
@@ -72,10 +92,28 @@ function CallWindow({
         <canvas
           width={model.inputShape[1]}
           height={model.inputShape[2]}
-          style={{zIndex: 10}}
+          style={{ zIndex: 10 }}
           ref={canvasRef}
         />
       </div>
+      <div
+        ref={textRef}
+        style={{
+          position: "fixed",
+          zIndex: 99999999999,
+          color: "white",
+          top: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "black",
+          overflowWrap: "break-word",
+          wordWrap: "break-word",
+          hyphens: "auto",
+        }}
+      />
 
       <video id="localVideo" ref={localVideo} autoPlay muted />
       <div className="video-control">

@@ -1,15 +1,22 @@
-import { faPhone, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { socket } from "../communication";
 import ActionButton from "./ActionButton";
 
+/**
+ * This function sets the client ID and updates the document title in a video call application using
+ * React and Socket.IO.
+ * @returns The `useClientID` function returns the `clientID` state variable, which is initially an
+ * empty string but is updated with the ID received from the server through a socket connection in the
+ * `useEffect` hook. The `clientID` is also used to set the document title.
+ */
 function useClientID() {
   const [clientID, setClientID] = useState("");
 
   useEffect(() => {
     socket.on("init", ({ id }) => {
-      document.title = `${id} - VideoCall`;
+      document.title = `${id} - Signape`;
       setClientID(id);
     });
   }, []);
@@ -17,16 +24,25 @@ function useClientID() {
   return clientID;
 }
 
+/**
+ * The MainWindow function returns a component that displays a user's client ID and allows them to
+ * enter a friend's ID to initiate a call with or without video.
+ * @returns A function is being returned by the `callWithVideo` function.
+ */
 function MainWindow({ startCall }) {
   const clientID = useClientID();
   const [friendID, setFriendID] = useState(null);
 
   /**
-   * Start the call with or without video
-   * @param {Boolean} video
+   * The function returns a callback that starts a call with audio and video if a friend ID is present.
+   * @param video - The `video` parameter is a boolean value that determines whether or not video
+   * should be included in the call configuration. If `video` is `true`, then video will be included in
+   * the call configuration. If `video` is `false`, then video will not be included in the call
+   * configuration.
+   * @returns A function is being returned.
    */
   const callWithVideo = (video) => {
-    const config = { audio: true, video };
+    const config = { audio: false, video };
     return () => friendID && startCall(true, friendID, config);
   };
 
@@ -35,10 +51,10 @@ function MainWindow({ startCall }) {
       <div className=" card-body p-5">
         <div className="text-center">
           <div>
-            <h3 className='fw-bold'>
+            <h3 className="fw-bold">
               Tu nombre de usuario es:
               <span>
-                <br/>
+                <br />
                 <input
                   type="text"
                   className="txt-clientId"
@@ -49,8 +65,9 @@ function MainWindow({ startCall }) {
             </h3>
             <h5>
               O Copia el ID de tu amigo aquí:
-              <span> {" "}
-              <br/>
+              <span>
+                {" "}
+                <br />
                 <input
                   type="text"
                   className="txt-clientId"
@@ -62,17 +79,15 @@ function MainWindow({ startCall }) {
             </h5>
           </div>
           <div>
-
             <div className="text-center">
               <div>
-                <ActionButton icon={faVideo} onClick={callWithVideo(true)} />
+                {/* <ActionButton icon={faVideo} onClick={callWithVideo(true)} /> */}
                 <ActionButton icon={faPhone} onClick={callWithVideo(false)} />
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 }

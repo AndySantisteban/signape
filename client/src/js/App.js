@@ -7,6 +7,7 @@ import { PeerConnection, socket } from "./communication";
 import CallModal from "./components/CallModal";
 import CallWindow from "./components/CallWindow";
 import MainWindow from "./components/MainWindow";
+
 const App = () => {
   const [callWindow, setCallWindow] = useState("");
   const [callModal, setCallModal] = useState("");
@@ -17,15 +18,30 @@ const App = () => {
   const configRef = useRef(null);
 
   const [loading, setLoading] = useState({ loading: true, progress: 0 });
+
+  /* `const [model, setModel] = useState({ net: null, inputShape: [1, 0, 0, 3] });` is declaring a
+  state variable `model` using the `useState` hook. The initial state of `model` is an object with
+  two properties: `net` and `inputShape`. `net` is initially set to `null`, while `inputShape` is an
+  array with four elements: `[1, 0, 0, 3]`. The `setModel` function can be used to update the state
+  of `model` later in the component's lifecycle. */
   const [model, setModel] = useState({
     net: null,
     inputShape: [1, 0, 0, 3],
   });
 
+  /* `const modelName = "best3";` is declaring a constant variable `modelName` and assigning it the
+  value `"best3"`. This variable is later used to load a specific pre-trained machine learning model
+  in the `useEffect` hook. */
   const modelName = "best3";
 
   useEffect(() => {
     tf.ready().then(async () => {
+      /* This code is loading a pre-trained machine learning model called YOLOv5 using TensorFlow.js.
+      The `tf.loadGraphModel()` function is used to load the model from a JSON file located in the
+      `/models` directory with a specific file name based on the `modelName` variable. The second
+      argument to this function is an options object that includes a callback function `onProgress`
+      which is called during the loading process to update the `loading` state with the current
+      progress fraction. Once the model is loaded, it is stored in the `yolov5` constant variable. */
       const yolov5 = await tf.loadGraphModel(
         `/models/${modelName}_web_model/model.json`,
         {
@@ -47,7 +63,6 @@ const App = () => {
       });
     });
   }, []);
-
 
   useEffect(() => {
     socket
@@ -71,6 +86,16 @@ const App = () => {
     };
   }, []);
 
+  /**
+   * The function starts a peer connection with a friend and sets the local and peer streams based on
+   * whether the user is the caller or not.
+   * @param isCaller - A boolean value indicating whether the current user is the caller or not.
+   * @param friendID - The ID of the friend or peer that the user wants to establish a connection with.
+   * @param config - The `config` parameter is an object that contains configuration options for the
+   * PeerConnection. It is passed to the `startCall` function and then stored in a `configRef` for
+   * later use. The specific properties and values of the `config` object are not shown in the code
+   * snippet provided.
+   */
   const startCall = (isCaller, friendID, config) => {
     configRef.current = config;
     const pc = new PeerConnection(friendID)
@@ -87,11 +112,21 @@ const App = () => {
     pcRef.current = pc;
   };
 
+  /**
+   * The function `rejectCall` emits an "end" event to a socket and sets a call modal to an empty
+   * string.
+   */
   const rejectCall = () => {
     socket.emit("end", { to: callFrom });
     setCallModal("");
   };
 
+  /**
+   * The function "endCall" stops a video call and resets various states and references.
+   * @param isStarter - isStarter is a boolean parameter that indicates whether the current user is the
+   * one who initiated the call or not. It is used in the function to stop the peer connection and
+   * reset some state variables when the call ends.
+   */
   const endCall = (isStarter) => {
     if (_.isFunction(pcRef.current.stop)) {
       pcRef.current.stop(isStarter);
@@ -111,7 +146,11 @@ const App = () => {
           <a className=" " href="#">
             <img src={Logo} alt="icon" width={"100px"} />
           </a>
-          <div>{loading.loading ? `Cargando modelo para web... ${loading.progress.toFixed(2)}` : "Modelo cargado"}</div>
+          <div>
+            {loading.loading
+              ? `Cargando modelo para web... ${loading.progress.toFixed(2)}`
+              : "Modelo cargado"}
+          </div>
           <div>
             <small>
               <code className="text-muted">
@@ -131,7 +170,7 @@ const App = () => {
           config={configRef.current}
           mediaDevice={pcRef.current.mediaDevice}
           endCall={endCall}
-          onPlay={()=> {}}
+          onPlay={() => {}}
           model={model}
         />
       )}
