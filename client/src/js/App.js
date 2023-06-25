@@ -5,9 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
 import ClipLoader from "react-spinners/GridLoader";
 import Logo from "../assets/Screenshot_2.png";
 import { PeerConnection, socket } from "./communication";
-import CallModal from "./components/CallModal";
-import CallWindow from "./components/CallWindow";
-import MainWindow from "./components/MainWindow";
+import Modal from "./components/CallModal";
+import Call from "./components/CallWindow";
+import Main from "./components/MainWindow";
 
 const App = () => {
   const [callWindow, setCallWindow] = useState("");
@@ -166,7 +166,7 @@ const App = () => {
 
       <nav className="navbar bg-light shadow-sm">
         <div className="container">
-          <a className=" " href="#">
+          <a className="" href="#">
             <img src={Logo} alt="icon" width={"100px"} />
           </a>
           <div>
@@ -179,9 +179,9 @@ const App = () => {
           </div>
         </div>
       </nav>
-      <MainWindow startCall={startCall} />
+      <Main startCall={startCall} />
       {!_.isEmpty(configRef.current) && (
-        <CallWindow
+        <Call
           status={callWindow}
           localSrc={localSrc}
           peerSrc={peerSrc}
@@ -192,7 +192,7 @@ const App = () => {
           model={model}
         />
       )}
-      <CallModal
+      <Modal
         status={callModal}
         startCall={startCall}
         rejectCall={rejectCall}

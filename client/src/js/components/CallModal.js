@@ -18,9 +18,9 @@ function CallModal({ status, callFrom, startCall, rejectCall }) {
 
   return (
     <div className={classnames("call-modal", status)}>
-      <p>
-        <span className="caller">{`${callFrom}, te está llamando`}</span>
-      </p>
+      <small className="text-center fw-bold">{`${callFrom}, te está llamando !!!`}</small>
+      <br />
+      <br />
       <ActionButton icon={faPhone} onClick={acceptWithVideo(false)} />
       <ActionButton className="hangup" icon={faPhone} onClick={rejectCall} />
     </div>

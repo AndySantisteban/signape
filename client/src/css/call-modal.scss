@@ -1,39 +1,49 @@
 .call-modal {
-	position: absolute;
-	width: 400px;
-	padding: 20px;
-	left: calc(50vw - 200px);
-	top: calc(50vh - 60px);
-	// @include bg-gradient(top, #074055 0%, #030D10 100%);
-	background-color: white;
-	@include border-radius(5px);
-	text-align: center;
-	display: none;
+  position: absolute;
+  width: 400px;
+  padding: 30px;
+  left: calc(50vw - 200px);
+  top: calc(50vh - 60px);
+  // @include bg-gradient(top, #074055 0%, #030D10 100%);
+  background-color: white;
+  @include border-radius(5px);
+  text-align: center;
+  display: none;
 
-	&.active {
-		display: block;
-		z-index: 9999;
-		@include animation(blinking 3s infinite linear);
-		border: 1px solid #ccc !important;
+  &.active {
+    display: block;
+    z-index: 9999;
+    @include animation(blinking 1s infinite linear);
+    border: 1px solid #acacac !important;
+  }
 
-	}
+  .btn-action:not(.hangup) {
+    background-color: $green;
+  }
+  small {
+    color: #010101;
+    font-family: "Inter", sans-serif;
+  }
+  span.caller {
+    color: #010101;
+  }
 
-	.btn-action:not(.hangup) {
-		background-color: $green;
-	}
-
-	span.caller {
-		color: #010101;
-	}
-
-	p {
-		font-size: 1.5em;
-	}
+  p {
+    font-size: 1.5em;
+  }
 }
 
 @include keyframes(blinking) {
-	25% {@include transform(scale(0.96))}
-	50% {@include transform(scale(1))}
-	75% {@include transform(scale(0.96))}
-	100% {@include transform(scale(1))}
+  25% {
+    @include transform(scale(0.96));
+  }
+  50% {
+    @include transform(scale(1));
+  }
+  75% {
+    @include transform(scale(0.96));
+  }
+  100% {
+    @include transform(scale(1));
+  }
 }
