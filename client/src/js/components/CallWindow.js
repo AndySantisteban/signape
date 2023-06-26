@@ -80,7 +80,12 @@ function CallWindow({
                 try {
                   if (textRef.current === undefined || textRef.current === null)
                     return;
-                  textRef.current.innerHTML += res;
+                  const innerText = textRef.current.innerText;
+                  const lastChar = innerText[innerText.length - 1];
+
+                  if (res !== lastChar) {
+                    textRef.current.innerHTML += res;
+                  }
                 } catch (e) {
                   console.log("error - subtitle", e);
                 }
