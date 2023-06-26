@@ -33,6 +33,8 @@ function CallWindow({
   const [video, setVideo] = useState(config.video);
   const [audio, setAudio] = useState(config.audio);
   const classThreshold = 0.15;
+  let undefinedCount = 0;
+  const MAX_UNDEFINED_COUNT = 3;
 
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
@@ -76,7 +78,17 @@ function CallWindow({
               classThreshold,
               canvasRef.current,
               (res) => {
-                if (!res) return;
+                if (!res) {
+                  undefinedCount++;
+                  if (undefinedCount > MAX_UNDEFINED_COUNT) {
+                    undefinedCount = 0;
+                    textRef.current.innerHTML += " ";
+                  }
+                  return;
+                }
+
+                undefinedCount = 0;
+
                 try {
                   if (textRef.current === undefined || textRef.current === null)
                     return;
