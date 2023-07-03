@@ -1,6 +1,7 @@
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import Brand from "../../assets/traductor-brand.png";
 import { socket } from "../communication";
 import ActionButton from "./ActionButton";
 
@@ -48,45 +49,54 @@ function MainWindow({ startCall }) {
 
   return (
     <div className="main-window  container p-4">
-      <div className=" card-body p-5">
-        <div className="text-center">
-          <div>
-            <h3 className="fw-bold">
-              Tu nombre de usuario es:
-              <span>
+      <div className=" d-flex justify-content-center align-items-center pt-5 flex-wrap ">
+        <div className=" card-body p-5 col-md-6 ">
+          <div className="text-start">
+            <div>
+              <h3 className="fw-bold">
+                Tu ID de usuario es:
+                <span>
+                  <br />
+                  <input
+                    type="text"
+                    className="txt-clientId  border-0 text-muted"
+                    defaultValue={clientID}
+                    readOnly
+                  />
+                </span>
+              </h3>
+              <br />
+              <h6>
+                O Copia el ID de tu amigo aquí:
                 <br />
-                <input
-                  type="text"
-                  className="txt-clientId"
-                  defaultValue={clientID}
-                  readOnly
-                />
-              </span>
-            </h3>
-            <h5>
-              O Copia el ID de tu amigo aquí:
-              <span>
-                {" "}
-                <br />
-                <input
-                  type="text"
-                  className="txt-clientId"
-                  spellCheck={false}
-                  placeholder="Nombre de usuario"
-                  onChange={(event) => setFriendID(event.target.value)}
-                />
-              </span>
-            </h5>
-          </div>
-          <div>
-            <div className="text-center">
-              <div>
-                {/* <ActionButton icon={faVideo} onClick={callWithVideo(true)} /> */}
-                <ActionButton icon={faPhone} onClick={callWithVideo(false)} />
+                <span>
+                  <br />
+                  <input
+                    type="text"
+                    className="txt-clientId pb-2"
+                    spellCheck={false}
+                    placeholder="Nombre de usuario"
+                    onChange={(event) => setFriendID(event.target.value)}
+                  />
+                </span>
+              </h6>
+            </div>
+            <div>
+              <div className="text-start">
+                <div>
+                  <ActionButton icon={faPhone} onClick={callWithVideo(false)} />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div className="col-md-6 ">
+          <img src={Brand} width={"100%"} />
+        </div>
+      </div>
+      <div className="text-center mt-5">
+        <small>Nicolette Isis Pacheco Contreras y </small>
+        <small>Andy Josue Santisteban Ostos</small>
       </div>
     </div>
   );

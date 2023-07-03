@@ -3,7 +3,8 @@ import "@tensorflow/tfjs-backend-webgl"; // set backend to webgl
 import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import ClipLoader from "react-spinners/GridLoader";
-import Logo from "../assets/Screenshot_2.png";
+import Logo from "../assets/logo-2.png";
+import USS from "../assets/uss.png";
 import { PeerConnection, socket } from "./communication";
 import Modal from "./components/CallModal";
 import Call from "./components/CallWindow";
@@ -52,8 +53,13 @@ const App = () => {
         }
       );
 
+      /* The code `const dummyInput = tf.ones(yolov5.inputs[0].shape);` creates a TensorFlow tensor
+      called `dummyInput` with the same shape as the first input of the `yolov5` model. The
+      `tf.ones()` function is used to create a tensor filled with ones. */
       const dummyInput = tf.ones(yolov5.inputs[0].shape);
       const warmupResult = await yolov5.executeAsync(dummyInput);
+      /* The code `tf.dispose(warmupResult); tf.dispose(dummyInput);` is disposing of the TensorFlow
+      tensors `warmupResult` and `dummyInput`. */
       tf.dispose(warmupResult);
       tf.dispose(dummyInput);
 
@@ -166,16 +172,16 @@ const App = () => {
 
       <nav className="navbar bg-light shadow-sm">
         <div className="container">
-          <a className="" href="#">
-            <img src={Logo} alt="icon" width={"100px"} />
-          </a>
+          <div className="d-flex  align-items-center gap-3" href="#">
+            <div className="d-flex align-items-center">
+              <img src={Logo} alt="icon" width={"80px"} />
+              <h2 className="text-decoration-none text-dark fw-bold mb-0">
+                SignApe
+              </h2>
+            </div>
+          </div>
           <div>
-            <small>
-              <code className="text-muted">
-                - Nicolette Isis Pacheco Contreras
-                <br />- Andy Josue Santisteban Ostos
-              </code>
-            </small>
+            <img src={USS} loading="lazy" width={"80px"} />
           </div>
         </div>
       </nav>
