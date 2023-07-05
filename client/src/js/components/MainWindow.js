@@ -46,7 +46,7 @@ function MainWindow({ startCall }) {
     const config = { audio: false, video };
     return () => friendID && startCall(true, friendID, config);
   };
-
+  console.log(window.innerWidth);
   return (
     <div className="main-window  container p-4">
       <div className=" d-flex justify-content-center align-items-center pt-5 flex-wrap ">
@@ -90,12 +90,12 @@ function MainWindow({ startCall }) {
             </div>
           </div>
         </div>
-        <div className="col-md-6 ">
+        <div className="col-md-6 " hidden={window.innerWidth < 728}>
           <img src={Brand} width={"100%"} />
         </div>
       </div>
       <div className="text-center mt-5">
-        <small>Nicolette Isis Pacheco Contreras y </small>
+        <small>Nicolette Isis Pacheco Contreras y </small> <br />
         <small>Andy Josue Santisteban Ostos</small>
       </div>
     </div>
