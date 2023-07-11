@@ -112,25 +112,26 @@ function CallWindow({
           style={{ zIndex: 10 }}
           ref={canvasRef}
         />
+        <div
+          ref={textRef}
+          style={{
+            position: "absolute",
+            zIndex: 99999999999,
+            color: "white",
+            bottom: "20%",
+            left: 0,
+            right: 0,
+            fontSize: 30,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#00000080",
+            overflowWrap: "break-word",
+            wordWrap: "break-word",
+            hyphens: "auto",
+          }}
+        />
       </div>
-      <div
-        ref={textRef}
-        style={{
-          position: "fixed",
-          zIndex: 99999999999,
-          color: "white",
-          top: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "black",
-          overflowWrap: "break-word",
-          wordWrap: "break-word",
-          hyphens: "auto",
-        }}
-      />
 
       <video id="localVideo" ref={localVideo} autoPlay muted />
       <div className="video-control">

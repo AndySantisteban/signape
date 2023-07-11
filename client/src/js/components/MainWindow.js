@@ -46,7 +46,6 @@ function MainWindow({ startCall }) {
     const config = { audio: false, video };
     return () => friendID && startCall(true, friendID, config);
   };
-  console.log(window.innerWidth);
   return (
     <div className="main-window  container p-4">
       <div className=" d-flex justify-content-center align-items-center pt-5 flex-wrap ">
