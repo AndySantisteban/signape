@@ -75,7 +75,9 @@ function MainWindow({ startCall }) {
                     className="txt-clientId pb-2"
                     spellCheck={false}
                     placeholder="Nombre de usuario"
-                    onChange={(event) => setFriendID(event.target.value)}
+                    onChange={(event) =>
+                      setFriendID(event.target.value?.trim() ?? "")
+                    }
                   />
                 </span>
               </h6>

@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
+  faBackspace,
+  faEraser,
   faMicrophone,
   faPhone,
   faVideo,
@@ -36,6 +38,20 @@ function CallWindow({
   let undefinedCount = 0;
   const MAX_UNDEFINED_COUNT = 3;
 
+  const handleKeyDown = (event) => {
+    if (
+      event.key === " " &&
+      event.target.tagName !== "INPUT" &&
+      event.target.tagName !== "TEXTAREA"
+    ) {
+      // Si la tecla presionada es la tecla de espacio y el foco no está en un input o textarea
+      event.preventDefault(); // Evitar la acción predeterminada (como hacer clic en un botón)
+      if (!textRef?.current) return;
+      if (!textRef?.current?.innerText?.length === 0) return;
+      textRef.current.innerHTML += " ";
+    }
+  };
+
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
     if (localVideo.current && localSrc) localVideo.current.srcObject = localSrc;
@@ -47,6 +63,16 @@ function CallWindow({
       mediaDevice.toggle("Audio", audio);
     }
   });
+
+  // Agregar el controlador de eventos al evento keydown de la ventana
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Limpiar el efecto cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []); // Se ejecutará solo una vez al montar el componente
 
   /**
    * The function toggles the state of a media device (either video or audio) and calls the
@@ -72,6 +98,8 @@ function CallWindow({
           ref={peerVideo}
           autoPlay
           onPlay={() => {
+            if (!peerVideo?.current) return;
+
             detectVideo(
               peerVideo.current,
               model,
@@ -82,7 +110,6 @@ function CallWindow({
                   undefinedCount++;
                   if (undefinedCount > MAX_UNDEFINED_COUNT) {
                     undefinedCount = 0;
-                    textRef.current.innerHTML += " ";
                   }
                   return;
                 }
@@ -109,19 +136,19 @@ function CallWindow({
         <canvas
           width={model.inputShape[1]}
           height={model.inputShape[2]}
-          style={{ zIndex: 10 }}
+          style={{ zIndex: -1 }}
           ref={canvasRef}
         />
         <div
           ref={textRef}
           style={{
             position: "absolute",
-            zIndex: 99999999999,
+            zIndex: 99999,
             color: "white",
             bottom: "20%",
             left: 0,
             right: 0,
-            fontSize: 30,
+            fontSize: 25,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -146,6 +173,35 @@ function CallWindow({
           icon={faMicrophone}
           disabled={!audio}
           onClick={() => toggleMediaDevice("Audio")}
+        />
+        <ActionButton
+          key="btnClear"
+          icon={faEraser}
+          disabled={!audio}
+          onClick={() => {
+            if (textRef.current !== undefined && textRef.current !== null) {
+              const innerText = textRef.current.innerText;
+              const newText = innerText.slice(0, -1); // Elimina el último carácter
+              textRef.current.innerHTML = newText;
+            }
+          }}
+        />
+        <ActionButton
+          key="btnClear"
+          icon={faBackspace}
+          disabled={!audio}
+          onClick={() => {
+            if (textRef.current !== undefined && textRef.current !== null) {
+              const innerText = textRef.current.innerText;
+              const words = innerText.trim().split(/\s+/);
+
+              // Eliminar la última palabra
+              words.pop();
+
+              // Actualizar el contenido con las palabras restantes
+              textRef.current.innerHTML = words.join(" ");
+            }
+          }}
         />
         <ActionButton
           className="hangup"

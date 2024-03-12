@@ -10,7 +10,20 @@ import Modal from "./components/CallModal";
 import Call from "./components/CallWindow";
 import Main from "./components/MainWindow";
 
+const useLocalStorage = (storageKey, fallbackState) => {
+  const [value, setValue] = React.useState(
+    JSON.parse(localStorage.getItem(storageKey)) ?? fallbackState
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(value));
+  }, [value, storageKey]);
+
+  return [value, setValue];
+};
+
 const App = () => {
+  const [isOpen, setOpen] = useLocalStorage("is-loaded", false);
   const [callWindow, setCallWindow] = useState("");
   const [callModal, setCallModal] = useState("");
   const [callFrom, setCallFrom] = useState("");
@@ -20,46 +33,37 @@ const App = () => {
   const configRef = useRef(null);
 
   const [loading, setLoading] = useState({ loading: true, progress: 0 });
-
-  /* `const [model, setModel] = useState({ net: null, inputShape: [1, 0, 0, 3] });` is declaring a
-  state variable `model` using the `useState` hook. The initial state of `model` is an object with
-  two properties: `net` and `inputShape`. `net` is initially set to `null`, while `inputShape` is an
-  array with four elements: `[1, 0, 0, 3]`. The `setModel` function can be used to update the state
-  of `model` later in the component's lifecycle. */
   const [model, setModel] = useState({
     net: null,
     inputShape: [1, 0, 0, 3],
   });
 
-  /* `const modelName = "best3";` is declaring a constant variable `modelName` and assigning it the
-  value `"best3"`. This variable is later used to load a specific pre-trained machine learning model
-  in the `useEffect` hook. */
   const modelName = "best3";
+  const MODEL_NAME = "my-model";
 
   useEffect(() => {
     tf.ready().then(async () => {
-      /* This code is loading a pre-trained machine learning model called YOLOv5 using TensorFlow.js.
-      The `tf.loadGraphModel()` function is used to load the model from a JSON file located in the
-      `/models` directory with a specific file name based on the `modelName` variable. The second
-      argument to this function is an options object that includes a callback function `onProgress`
-      which is called during the loading process to update the `loading` state with the current
-      progress fraction. Once the model is loaded, it is stored in the `yolov5` constant variable. */
-      const yolov5 = await tf.loadGraphModel(
-        `/models/${modelName}_web_model/model.json`,
-        {
-          onProgress: (fractions) => {
-            setLoading({ loading: true, progress: fractions });
-          },
-        }
-      );
+      let yolov5;
+      if (isOpen) {
+        yolov5 = await tf.loadGraphModel("indexeddb://my-model");
+        console.log("Modelo cargado desde IndexedDB");
+      } else {
+        yolov5 = await tf.loadGraphModel(
+          `/models/${modelName}_web_model/model.json`,
+          {
+            onProgress: (fractions) => {
+              setLoading({ loading: true, progress: fractions });
+            },
+          }
+        );
 
-      /* The code `const dummyInput = tf.ones(yolov5.inputs[0].shape);` creates a TensorFlow tensor
-      called `dummyInput` with the same shape as the first input of the `yolov5` model. The
-      `tf.ones()` function is used to create a tensor filled with ones. */
+        await yolov5.save("indexeddb://my-model");
+        console.log("Modelo guardado en IndexedDB");
+        setOpen(true);
+      }
+
       const dummyInput = tf.ones(yolov5.inputs[0].shape);
       const warmupResult = await yolov5.executeAsync(dummyInput);
-      /* The code `tf.dispose(warmupResult); tf.dispose(dummyInput);` is disposing of the TensorFlow
-      tensors `warmupResult` and `dummyInput`. */
       tf.dispose(warmupResult);
       tf.dispose(dummyInput);
 

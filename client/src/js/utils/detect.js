@@ -39,25 +39,22 @@ export const detectVideo = (
   func
 ) => {
   const [modelWidth, modelHeight] = model.inputShape.slice(1, 3);
-  const detectFrame = () => {
-    setTimeout(async () => {
-      if (vidSource.videoWidth === 0 && vidSource.srcObject === null) {
-        const ctx = canvasRef.getContext("2d");
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        return;
-      }
-      tf.engine().startScope();
 
-      const [input] = preprocess(vidSource, modelWidth, modelHeight);
-      await model.net.executeAsync(input).then((res) => {
-        const [boxes, scores, classes] = res.slice(0, 3);
-        const classes_data = classes.dataSync();
-        if (func) func(Labels[classes_data[0]]);
-        tf.dispose(res);
-      });
-      requestAnimationFrame(detectFrame);
-      tf.engine().endScope();
-    }, 1000);
+  const detectFrame = () => {
+    if (vidSource.paused || vidSource.ended) {
+      return;
+    }
+
+    tf.engine().startScope();
+    const [input] = preprocess(vidSource, modelWidth, modelHeight);
+    model.net.executeAsync(input).then((res) => {
+      const [boxes, scores, classes] = res.slice(0, 3);
+      const classes_data = classes.dataSync();
+      if (func) func(Labels[classes_data[0]]);
+      tf.dispose(res);
+      setTimeout(detectFrame, 1000); // Ejecutar detectFrame nuevamente después de 1 segundo
+    });
+    tf.engine().endScope();
   };
 
   detectFrame();
